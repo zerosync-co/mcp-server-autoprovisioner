@@ -1,0 +1,33 @@
+{
+  "tasks": {
+    "dev": "deno run -A src/index.ts",
+    "compile-and-install": "./compile-and-install-local.sh",
+    "compile-and-install:watch": "deno run -A npm:onchange src/**/*.ts -- deno task compile-and-install"
+  },
+  "imports": {
+    "@cloudflare/workers-types": "npm:@cloudflare/workers-types@^4.20250312.0",
+    "@modelcontextprotocol/sdk": "npm:@modelcontextprotocol/sdk@^1.7.0",
+    "@std/assert": "jsr:@std/assert@^1.0.11",
+    "@std/fs": "jsr:@std/fs@^1.0.14",
+    "@std/path": "jsr:@std/path@^1.0.8",
+    "@std/toml": "jsr:@std/toml@^1.0.2",
+    "@trpc/client": "npm:@trpc/client@^11.1.2",
+    "@types/node": "npm:@types/node@^22.13.10",
+    "@types/which": "npm:@types/which@^3.0.4",
+    "chalk": "npm:chalk@^5.4.1",
+    "jsonwebtoken": "npm:jsonwebtoken@^9.0.2",
+    "octokit": "npm:octokit@^4.1.3",
+    "open": "npm:open@^10.1.0",
+    "which": "npm:which@^5.0.0",
+    "zod": "npm:zod@^3.24.2",
+    "xdg-app-paths": "https://deno.land/x/xdg_app_paths@v8.3.0/src/mod.deno.ts"
+  },
+  "compilerOptions": {
+    "types": [
+      "@cloudflare/workers-types/experimental",
+      "@types/node",
+      "@types/which"
+    ],
+    "strict": true
+  }
+}
