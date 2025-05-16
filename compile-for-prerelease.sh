@@ -14,6 +14,8 @@ compile_binary() {
     local extension="$3"
 
     echo "Compiling for $name..."
+
+    # REVIEW-- this should not need all permissions
     deno compile \
         --target "$target" \
         -A \

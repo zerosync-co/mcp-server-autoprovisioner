@@ -1,6 +1,7 @@
 #!/bin/bash
 set -eou pipefail
 
+# REVIEW-- this should not need all permissions
 deno compile \
     --output autoprovisioner \
     --env-file=".env" \
