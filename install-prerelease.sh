@@ -1,23 +1,23 @@
 #!/bin/bash
 set -eou pipefail
 
-# MCP_SERVER_AUTOPROVISIONER_RELEASE_API_URL="https://api.github.com/repos/zerosync-co/mcp-server-autoprovisioner/releases"
-# MCP_SERVER_AUTOPROVISIONER_RESPONSE=$(curl -s "$MCP_SERVER_AUTOPROVISIONER_RELEASE_API_URL" | jq -r '[.[] | select(.prerelease == true)] | first')
-# if [ -z "$MCP_SERVER_AUTOPROVISIONER_RESPONSE" ]; then
-#     echo hello 1
+MCP_SERVER_AUTOPROVISIONER_RELEASE_API_URL="https://api.github.com/repos/zerosync-co/mcp-server-autoprovisioner/releases"
+MCP_SERVER_AUTOPROVISIONER_RESPONSE=$(curl -s "$MCP_SERVER_AUTOPROVISIONER_RELEASE_API_URL" | jq -r '[.[] | select(.prerelease == true)] | first')
+if [ -z "$MCP_SERVER_AUTOPROVISIONER_RESPONSE" ]; then
+    echo hello 1
 
-#     echo "Error: Failed to fetch the latest mcp-server-autoprovisioner release from GitHub API."
-#     exit 1
-# fi
+    echo "Error: Failed to fetch the latest mcp-server-autoprovisioner release from GitHub API."
+    exit 1
+fi
 
 
 
-# MCP_SERVER_AUTOPROVISIONER_LATEST_TAG=$(echo "$MCP_SERVER_AUTOPROVISIONER_RESPONSE" | grep -m 1 '"tag_name":' | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/')
-# echo $MCP_SERVER_AUTOPROVISIONER_LATEST_TAG
-# if [ -z "$MCP_SERVER_AUTOPROVISIONER_LATEST_TAG" ]; then
-#     echo "Error: Could not find the latest mcp-server-autoprovisioner release tag."
-#     exit 1
-# fi
+MCP_SERVER_AUTOPROVISIONER_LATEST_TAG=$(echo "$MCP_SERVER_AUTOPROVISIONER_RESPONSE" | grep -m 1 '"tag_name":' | sed -E 's/.*"tag_name": *"([^"]+)".*/\1/')
+echo $MCP_SERVER_AUTOPROVISIONER_LATEST_TAG
+if [ -z "$MCP_SERVER_AUTOPROVISIONER_LATEST_TAG" ]; then
+    echo "Error: Could not find the latest mcp-server-autoprovisioner release tag."
+    exit 1
+fi
 
 # TODO-- support windows release
 OS=''
@@ -34,8 +34,7 @@ case "$ARCH" in
   *)                echo "unknown arch: $ARCH" && exit 1 ;;
 esac
 
-# MCP_SERVER_AUTOPROVISIONER_DOWNLOAD_URL="https://github.com/zerosync-co/mcp-server-autoprovisioner/releases/download/$MCP_SERVER_AUTOPROVISIONER_LATEST_TAG/mcp-server-autoprovisioner-$OS-$ARCH-$MCP_SERVER_AUTOPROVISIONER_LATEST_TAG"
-MCP_SERVER_AUTOPROVISIONER_DOWNLOAD_URL="https://get-autoprovisioner.zerosync.co/mcp-server-autoprovisioner-$OS-$ARCH"
+MCP_SERVER_AUTOPROVISIONER_DOWNLOAD_URL="https://github.com/zerosync-co/mcp-server-autoprovisioner/releases/download/$MCP_SERVER_AUTOPROVISIONER_LATEST_TAG/mcp-server-autoprovisioner-$OS-$ARCH-$MCP_SERVER_AUTOPROVISIONER_LATEST_TAG"
 
 # Function to check if a directory is in PATH and writable
 is_valid_install_dir() {
@@ -59,8 +58,7 @@ if [ -z "$INSTALL_DIR" ]; then
   USE_SUDO=1
 fi
 
-# echo "Installing mcp-server-autoprovisioner release with tag: $MCP_SERVER_AUTOPROVISIONER_LATEST_TAG"
-echo "Installing mcp-server-autoprovisioner prerelease"
+echo "Installing mcp-server-autoprovisioner release with tag: $MCP_SERVER_AUTOPROVISIONER_LATEST_TAG"
 
 MCP_SERVER_AUTOPROVISIONER_TARGET="$INSTALL_DIR/mcp-server-autoprovisioner"
 echo "Downloading mcp-server-autoprovisioner from: $MCP_SERVER_AUTOPROVISIONER_DOWNLOAD_URL"

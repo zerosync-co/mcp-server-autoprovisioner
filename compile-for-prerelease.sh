@@ -4,7 +4,7 @@
 
 DIST_DIR="dist"
 SOURCE_FILE="src/index.ts"
-# VERSION="${GITHUB_EVENT_RELEASE_TAG_NAME:-dev-$(git rev-parse --short HEAD)}"
+VERSION="${GITHUB_EVENT_RELEASE_TAG_NAME:-dev-$(git rev-parse --short HEAD)}"
 
 mkdir -p "$DIST_DIR"
 
@@ -17,14 +17,12 @@ compile_binary() {
     deno compile \
         --target "$target" \
         -A \
-        --output "${DIST_DIR}/mcp-server-autoprovisioner-${name}${extension}" \
+        --output "${DIST_DIR}/mcp-server-autoprovisioner-${name}-${VERSION}${extension}" \
         --env-file=".env" \
         "$SOURCE_FILE"
-        # --output "${DIST_DIR}/mcp-server-autoprovisioner-${name}-${VERSION}${extension}" \
 
     if [ $? -eq 0 ]; then
-        echo "Successfully compiled mcp-server-autoprovisioner-${name}${extension}"
-        # echo "Successfully compiled mcp-server-autoprovisioner-${name}-${VERSION}${extension}"
+        echo "Successfully compiled mcp-server-autoprovisioner-${name}-${VERSION}${extension}"
     else
         echo "Failed to compile for $name"
         exit 1
