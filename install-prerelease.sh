@@ -97,3 +97,5 @@ case "$response" in
 esac
 
 mcp-server-autoprovisioner init
+
+echo "Installation complete!"
