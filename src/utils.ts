@@ -2,6 +2,7 @@ import * as path from "@std/path";
 import xdgAppPaths from "xdg-app-paths";
 import * as TOML from "@std/toml";
 import * as jwt from "jsonwebtoken";
+import { TRPCClientError } from "@trpc/client";
 
 export function isDirectory(configPath: string) {
   try {
@@ -150,4 +151,8 @@ export function getInitializedLocalState(): Promise<typeof LocalState> {
       }
     }, intervalMs);
   });
+}
+
+export function getTRPCErrorMessage(e: unknown): string {
+  return e instanceof TRPCClientError ? e.message : "Internal Server Error";
 }
