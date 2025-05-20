@@ -12,10 +12,10 @@ curl -fsSL https://raw.githubusercontent.com/zerosync-co/mcp-server-autoprovisio
 {
   "mcpServers": {
     "autoprovisioner": {
-      "command": "path/to/mcp-server-autoprovisioner>", // which mcp-server-autoprovisioner
+      "command": "path/to/mcp-server-autoprovisioner", // which mcp-server-autoprovisioner
       "args": [
         "run",
-        "<your user id>" // mcp-server-autoprovisioner version
+        "user_..." // mcp-server-autoprovisioner whoami
       ]
     }
   }
