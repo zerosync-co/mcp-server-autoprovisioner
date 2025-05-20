@@ -8,3 +8,4 @@ function getEnvVar(key: string): string {
 }
 
 export const TF_SERVICE_BASE_URL = getEnvVar("TF_SERVICE_BASE_URL");
+export const VERSION = getEnvVar("VERSION");

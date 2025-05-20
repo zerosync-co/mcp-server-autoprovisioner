@@ -1,10 +1,20 @@
 #!/bin/bash
 set -eou pipefail
 
+ENV_FILE=.env
+
+# workaround because I don't know how to pass individual env vars to deno compile
+temp_file=$(mktemp)
+trap 'rm -f "$temp_file"' EXIT
+cp $ENV_FILE "$temp_file"
+
+VERSION="${GITHUB_EVENT_RELEASE_TAG_NAME:-dev-$(git rev-parse --short HEAD)}"
+echo "VERSION=\"$VERSION\"" >> "$temp_file"
+
 # REVIEW-- this should not need all permissions
 deno compile \
     --output autoprovisioner \
-    --env-file=".env" \
+    --env-file="$temp_file" \
     -A src/index.ts
 
 # TODO-- support windows release
