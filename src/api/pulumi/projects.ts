@@ -6,29 +6,41 @@ import {
   filePath,
   projectId,
   projectName,
-  providerContents,
   repositoryUrl,
 } from "../../schemas.ts";
+import { z } from "zod";
 
-export function initializeInfrastructureProject(
+// https://www.pulumi.com/docs/iac/languages-sdks/
+const supportedRuntimes = ["nodejs"] as const;
+const supportedRuntimesSchema = z.enum(supportedRuntimes).describe(
+  `The Pulumi runtime (e.g., ${
+    supportedRuntimes.map((v) => `'${v}'`).join(", ")
+  })`,
+);
+
+export function initializeProject(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "initialize_terraform_project",
-    "Create a new terraform infrastructure project",
+    "initialize_pulumi_project",
+    "Create a new pulumi infrastructure project",
     {
       projectName,
-      providerContents,
+      runtime: supportedRuntimesSchema,
       repositoryUrl: repositoryUrl.optional(),
+      stackName: z.string().optional().describe(
+        "The associated stack name. Defaults to 'dev'.",
+      ),
     },
     async (data) => {
       try {
-        const projectId = await projectsClient.projects.terraform.create.mutate(
+        const projectId = await projectsClient.projects.pulumi.create.mutate(
           {
             name: data.projectName,
-            providerContents: data.providerContents,
+            runtime: data.runtime,
             repositoryUrl: data.repositoryUrl,
+            stackName: data.stackName,
           },
         );
 
@@ -56,12 +68,12 @@ export function readProjectFs(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "read_terraform_project_fs",
-    "Read the top-level files of a terraform project",
+    "read_pulumi_project_fs",
+    "Read the top-level files of a pulumi project",
     { projectId },
     async (data) => {
       try {
-        const files = await projectsClient.projects.terraform.byId.query(
+        const files = await projectsClient.projects.pulumi.byId.query(
           data.projectId,
         );
 
@@ -94,12 +106,12 @@ export function readProjectFile(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "read_terraform_project_file",
-    "Read the contents of a terraform project file",
+    "read_pulumi_project_file",
+    "Read the contents of a pulumi project file",
     { projectId, filePath },
     async (data) => {
       try {
-        const file = await projectsClient.projects.terraform.fileByPath.query(
+        const file = await projectsClient.projects.pulumi.fileByPath.query(
           data,
         );
 
@@ -133,8 +145,8 @@ export function writeToProject(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "write_terraform_configuration",
-    "Write a terraform configuration file",
+    "write_pulumi_configuration",
+    "Write a pulumi configuration file",
     {
       projectId,
       filePath,
@@ -142,7 +154,7 @@ export function writeToProject(
     },
     async (data) => {
       try {
-        await projectsClient.projects.terraform.write.mutate({
+        await projectsClient.projects.pulumi.write.mutate({
           projectId: data.projectId,
           filePath: data.filePath,
           content: data.fileContent,
@@ -167,22 +179,28 @@ export function writeToProject(
   );
 }
 
-export function applyProjectInfrastructure(
+export function installDependency(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "apply_terraform_infrastructure",
-    "Apply a terraform project",
+    "install_pulumi_project_dependency",
+    "Install pulumi infrastructure project dependency",
     {
-      // instead of checking if provider(s) are managed
-      // need to check if sensitive project vars exist in backend ?
       projectId,
+      runtime: supportedRuntimesSchema, // FIXME-- should not have to pass this again
+      dependency: z.string().describe(
+        "The dependency (e.g., '@pulumi/cloudflare')",
+      ),
     },
     async (data) => {
       try {
-        await projectsClient.projects.terraform.applyInfrastructure.mutate(
-          data.projectId,
+        await projectsClient.projects.pulumi.installDependency.mutate(
+          {
+            projectId: data.projectId,
+            runtime: data.runtime,
+            dependency: data.dependency,
+          },
         );
 
         return {
@@ -203,26 +221,27 @@ export function applyProjectInfrastructure(
     },
   );
 }
-export function destroyProjectInfrastructure(
-  server: McpServer,
-  projectsClient: ProjectsClient,
-) {
+
+export function preview(server: McpServer, projectsClient: ProjectsClient) {
   server.tool(
-    "destroy_terraform_infrastructure",
-    "Destroy a terraform project",
+    "preview_pulumi_project",
+    "Run pulumi preview for a given project and stack",
     {
       projectId,
+      stackName: z.string().optional().describe(
+        "The associated stack name. Defaults to 'dev'.",
+      ),
     },
     async (data) => {
       try {
-        await projectsClient.projects.terraform.destroyInfrastructure.mutate(
-          data.projectId,
+        const previewRes = await projectsClient.projects.pulumi.preview.query(
+          data,
         );
 
         return {
           content: [{
             type: "text",
-            text: "Success",
+            text: previewRes,
           }],
         };
       } catch (e) {

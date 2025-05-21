@@ -1,11 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { registerGithubApi } from "./api/github.ts";
-import { registerExamplesApi } from "./api/examples.ts";
 import { registerManagedProvidersApi } from "./api/managed-providers.ts";
 import { registerTerraformApi } from "./api/terraform/mod.ts";
 import { createClient } from "./projects-client.ts";
-import { deployInfrastructurePrompt } from "./prompts.ts";
+import { deployTerraformProjectPrompt } from "./prompts.ts";
 import { registerPulumiApi } from "./api/pulumi/mod.ts";
 
 const server = new McpServer(
@@ -18,13 +17,12 @@ const server = new McpServer(
 
 const projectsClient = createClient();
 
-registerExamplesApi(server, projectsClient);
 registerGithubApi(server);
 registerManagedProvidersApi(server);
 registerTerraformApi(server, projectsClient);
 registerPulumiApi(server, projectsClient);
 
-deployInfrastructurePrompt(server);
+deployTerraformProjectPrompt(server);
 
 export async function main() {
   try {

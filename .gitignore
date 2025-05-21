@@ -4,5 +4,5 @@ dist/
 .DS_Store
 *.backup
 /tmp
-autoprovisioner
+autoprovisioner*
 test.ts

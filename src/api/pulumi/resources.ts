@@ -107,7 +107,7 @@ export function getResource(server: McpServer, projectsClient: ProjectsClient) {
         .string()
         .optional()
         .describe(
-          "The module to query (e.g., 's3', 'ec2', 'lambda'). Optional for smaller providers, will be 'index by default.",
+          "The module to query (e.g., 's3', 'ec2', 'lambda'). Optional for smaller providers",
         ),
       resource: z
         .string()

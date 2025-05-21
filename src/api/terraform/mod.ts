@@ -13,19 +13,24 @@ import {
   applyProjectInfrastructure,
   destroyProjectInfrastructure,
   initializeInfrastructureProject,
-  readInfrastructureProjectFile,
-  readInfrastructureProjectFs,
-  writeProjectInfrastructure,
+  readProjectFile,
+  readProjectFs,
+  writeToProject,
 } from "./projects.ts";
+import {
+  getTerraformExampleDirectory,
+  getTerraformExampleDirectoryFile,
+  listExamples,
+} from "./examples.ts";
 
 export function registerTerraformApi(
   mcpServer: McpServer,
   projectsClient: ProjectsClient,
 ) {
   initializeInfrastructureProject(mcpServer, projectsClient);
-  readInfrastructureProjectFs(mcpServer, projectsClient);
-  readInfrastructureProjectFile(mcpServer, projectsClient);
-  writeProjectInfrastructure(mcpServer, projectsClient);
+  readProjectFs(mcpServer, projectsClient);
+  readProjectFile(mcpServer, projectsClient);
+  writeToProject(mcpServer, projectsClient);
   applyProjectInfrastructure(mcpServer, projectsClient);
   destroyProjectInfrastructure(mcpServer, projectsClient);
 
@@ -35,4 +40,8 @@ export function registerTerraformApi(
 
   searchTerraformProviders(mcpServer);
   getProviderTerraformInformation(mcpServer);
+
+  listExamples(mcpServer, projectsClient);
+  getTerraformExampleDirectory(mcpServer, projectsClient);
+  getTerraformExampleDirectoryFile(mcpServer, projectsClient);
 }
