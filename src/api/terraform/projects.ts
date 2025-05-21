@@ -1,6 +1,6 @@
-import { getTRPCErrorMessage } from "../utils.ts";
+import { getTRPCErrorMessage } from "../../utils.ts";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { ProjectsClient } from "../projects-client.ts";
+import { ProjectsClient } from "../../projects-client.ts";
 import {
   fileContent,
   filePath,
@@ -8,9 +8,9 @@ import {
   projectName,
   providerContents,
   repositoryUrl,
-} from "../schemas.ts";
+} from "../../schemas.ts";
 
-function initializeInfrastructureProject(
+export function initializeInfrastructureProject(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
@@ -24,11 +24,13 @@ function initializeInfrastructureProject(
     },
     async (data) => {
       try {
-        const projectId = await projectsClient.projects.create.mutate({
-          name: data.projectName,
-          providerContents: data.providerContents,
-          repositoryUrl: data.repositoryUrl,
-        });
+        const projectId = await projectsClient.projects.terraform.create.mutate(
+          {
+            name: data.projectName,
+            providerContents: data.providerContents,
+            repositoryUrl: data.repositoryUrl,
+          },
+        );
 
         return {
           content: [{
@@ -49,7 +51,7 @@ function initializeInfrastructureProject(
   );
 }
 
-function readInfrastructureProjectFs(
+export function readInfrastructureProjectFs(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
@@ -59,7 +61,9 @@ function readInfrastructureProjectFs(
     { projectId },
     async (data) => {
       try {
-        const files = await projectsClient.projects.byId.query(data.projectId);
+        const files = await projectsClient.projects.terraform.byId.query(
+          data.projectId,
+        );
 
         return {
           content: [{
@@ -85,7 +89,7 @@ function readInfrastructureProjectFs(
   );
 }
 
-function readInfrastructureProjectFile(
+export function readInfrastructureProjectFile(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
@@ -95,7 +99,9 @@ function readInfrastructureProjectFile(
     { projectId, filePath },
     async (data) => {
       try {
-        const file = await projectsClient.projects.fileByPath.query(data);
+        const file = await projectsClient.projects.terraform.fileByPath.query(
+          data,
+        );
 
         return {
           content: [{
@@ -122,7 +128,7 @@ function readInfrastructureProjectFile(
   );
 }
 
-function writeProjectInfrastructure(
+export function writeProjectInfrastructure(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
@@ -136,7 +142,7 @@ function writeProjectInfrastructure(
     },
     async (data) => {
       try {
-        await projectsClient.projects.write.mutate({
+        await projectsClient.projects.terraform.write.mutate({
           projectId: data.projectId,
           filePath: data.filePath,
           content: data.fileContent,
@@ -161,7 +167,7 @@ function writeProjectInfrastructure(
   );
 }
 
-function applyProjectInfrastructure(
+export function applyProjectInfrastructure(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
@@ -175,7 +181,7 @@ function applyProjectInfrastructure(
     },
     async (data) => {
       try {
-        await projectsClient.projects.applyInfrastructure.mutate(
+        await projectsClient.projects.terraform.applyInfrastructure.mutate(
           data.projectId,
         );
 
@@ -197,7 +203,7 @@ function applyProjectInfrastructure(
     },
   );
 }
-function destroyProjectInfrastructure(
+export function destroyProjectInfrastructure(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
@@ -209,7 +215,7 @@ function destroyProjectInfrastructure(
     },
     async (data) => {
       try {
-        await projectsClient.projects.destroyInfrastructure.mutate(
+        await projectsClient.projects.terraform.destroyInfrastructure.mutate(
           data.projectId,
         );
 
@@ -230,16 +236,4 @@ function destroyProjectInfrastructure(
       }
     },
   );
-}
-
-export function registerProjectsApi(
-  server: McpServer,
-  projectsClient: ProjectsClient,
-) {
-  initializeInfrastructureProject(server, projectsClient);
-  readInfrastructureProjectFs(server, projectsClient);
-  readInfrastructureProjectFile(server, projectsClient);
-  writeProjectInfrastructure(server, projectsClient);
-  applyProjectInfrastructure(server, projectsClient);
-  destroyProjectInfrastructure(server, projectsClient);
 }
