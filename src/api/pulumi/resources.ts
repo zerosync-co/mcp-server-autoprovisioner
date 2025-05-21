@@ -174,3 +174,83 @@ export function getResource(server: McpServer, projectsClient: ProjectsClient) {
     },
   );
 }
+
+export function listResources(
+  server: McpServer,
+  projectsClient: ProjectsClient,
+) {
+  server.tool(
+    "list_pulumi_resources",
+    "List all resource types for a given provider and module",
+    {
+      provider: z
+        .string()
+        .describe(
+          "The cloud provider (e.g., 'aws', 'azure', 'gcp', 'random') or github.com/org/repo for Git-hosted components",
+        ),
+      module: z
+        .string()
+        .optional()
+        .describe("Optional module to filter by (e.g., 's3', 'ec2', 'lambda')"),
+    },
+    async (data) => {
+      const schema = await projectsClient.projects.pulumi.getSchema.query(
+        data.provider,
+      ) as Schema;
+
+      // Filter and format resources
+      const resources = Object.entries(schema.resources)
+        .filter(([key]) => {
+          if (data.module) {
+            const [, modulePath] = key.split(":");
+            const mainModule = modulePath.split("/")[0];
+            return mainModule === data.module;
+          }
+          return true;
+        })
+        .map(([key, resource]) => {
+          const resourceName = key.split(":").pop() || "";
+          const modulePath = key.split(":")[1];
+          const mainModule = modulePath.split("/")[0];
+          // Trim description at first '#' character
+          const shortDescription =
+            resource.description?.split("\n")[0].trim() ?? "<no description>";
+          return {
+            name: resourceName,
+            module: mainModule,
+            description: shortDescription,
+          };
+        });
+
+      if (resources.length === 0) {
+        return {
+          description: "No resources found",
+          content: [
+            {
+              type: "text" as const,
+              text: data.module
+                ? `No resources found for provider '${data.provider}' in module '${data.module}'`
+                : `No resources found for provider '${data.provider}'`,
+            },
+          ],
+        };
+      }
+
+      const resourceList = resources
+        .map((r) => `- ${r.name} (${r.module})\n  ${r.description}`)
+        .join("\n\n");
+
+      return {
+        description: "Lists available Pulumi Registry resources",
+        content: [
+          {
+            type: "text" as const,
+            text: data.module
+              ? `Available resources for ${data.provider}/${data.module}:\n\n${resourceList}`
+              : `Available resources for ${data.provider}:\n\n${resourceList}`,
+          },
+        ],
+      };
+    },
+  );
+}
