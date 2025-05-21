@@ -42,17 +42,6 @@ type Schema = {
   resources: Record<string, ResourceSchema>;
 };
 
-type GetResourceArgs = {
-  provider: string;
-  module?: string;
-  resource: string;
-};
-
-type ListResourcesArgs = {
-  provider: string;
-  module?: string;
-};
-
 function formatSchema(
   resourceKey: string,
   resourceData: ResourceSchema,
