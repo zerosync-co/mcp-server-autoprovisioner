@@ -28,9 +28,13 @@ Update configuration as follows:
 - no system dependencies
 - local, [stdio-based communication](https://modelcontextprotocol.io/docs/concepts/transports#standard-input%2Foutput-stdio)
 
+Step 1:
+
 ```
 curl -fsSL https://raw.githubusercontent.com/zerosync-co/mcp-server-autoprovisioner/main/install-prerelease.sh | bash
 ```
+
+Step 2:
 
 Run `mcp-server-autoprovisioner init`, or update configuration as follows
 

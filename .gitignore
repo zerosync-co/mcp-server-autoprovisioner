@@ -5,6 +5,7 @@ dist/
 *.backup
 /tmp
 autoprovisioner*
+mcp-server-autoprovisioner*
 test.ts
 .dev.vars
 .wrangler/
