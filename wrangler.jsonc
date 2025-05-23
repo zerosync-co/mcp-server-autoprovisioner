@@ -32,8 +32,8 @@
     "enabled": true,
   },
   "vars": {
-    "CLERK_REDIRECT_URL": "https://vital-oyster-7.accounts.dev/sign-in",
-    "MCP_SERVER_AUTOPROVISIONER_BASE_URL": "http://localhost:8787",
-    "TF_SERVICE_BASE_URL": "http://localhost:8000",
+    "CLERK_REDIRECT_URL": "https://accounts.zerosync.co",
+    "MCP_SERVER_AUTOPROVISIONER_BASE_URL": "https://autoprovisioner-remote.zerosync.co",
+    "TF_SERVICE_BASE_URL": "https://tf-service.zerosync.co",
   },
 }

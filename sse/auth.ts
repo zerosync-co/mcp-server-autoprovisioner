@@ -3,7 +3,7 @@
 import { Hono } from "hono";
 import type { OAuthHelpers } from "@cloudflare/workers-oauth-provider";
 import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
-import process from "node:process";
+import { env } from "cloudflare:workers";
 
 export type Bindings = Env & {
   OAUTH_PROVIDER: OAuthHelpers;
@@ -16,9 +16,9 @@ const app = new Hono<{
 app.use(
   "*",
   clerkMiddleware({
-    publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
-    secretKey: process.env.CLERK_SECRET_KEY,
-    jwtKey: process.env.CLERK_JWK,
+    publishableKey: env.CLERK_PUBLISHABLE_KEY,
+    secretKey: env.CLERK_SECRET_KEY,
+    jwtKey: env.CLERK_JWK,
   }),
 );
 
@@ -38,7 +38,7 @@ app.get("/authorize", async (c) => {
       mcpRedirectUrl.searchParams.append(key, value);
     }
 
-    const authRedirectUrl = new URL(c.env.CLERK_REDIRECT_URL);
+    const authRedirectUrl = new URL("/sign-in", c.env.CLERK_REDIRECT_URL);
     authRedirectUrl.searchParams.append(
       "redirect_url",
       mcpRedirectUrl.toString(),
