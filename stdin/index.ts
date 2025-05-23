@@ -6,8 +6,9 @@ import {
   supportedMcpClientsSchema,
 } from "./init.ts";
 import { main } from "./main.ts";
-import { getAuthTokens, LocalState } from "./utils.ts";
-import { VERSION } from "./env.ts";
+import { getAuthTokens, getBuildEnvVar, LocalState } from "../src/utils.ts";
+
+const VERSION = getBuildEnvVar("VERSION");
 
 const [cmd, ...args] = Deno.args;
 
@@ -102,7 +103,7 @@ switch (cmd) {
       },
     );
 
-    const whoami = await whoamiRes.json();
+    const whoami = await whoamiRes.json() as any;
     console.log(whoami.id);
 
     break;

@@ -6,3 +6,5 @@ dist/
 /tmp
 autoprovisioner*
 test.ts
+.dev.vars
+.wrangler/
