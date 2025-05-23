@@ -3,7 +3,7 @@
 # TODO-- refactor into github workflow on release-action branch
 
 DIST_DIR="dist"
-SOURCE_FILE="src/index.ts"
+SOURCE_FILE="stdio/index.ts"
 VERSION="${GITHUB_EVENT_RELEASE_TAG_NAME:-dev-$(git rev-parse --short HEAD)}"
 
 mkdir -p "$DIST_DIR"

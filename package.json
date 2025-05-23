@@ -2,6 +2,9 @@
   "name": "mcp-server",
   "version": "0.0.1",
   "scripts": {
+    "compile": "deno compile --output autoprovisioner --env-file=\".env\" -A stdio/index.ts",
+    "compile-and-install": "./compile-and-install-local.sh",
+    "compile-and-install:watch": "deno run -A npm:onchange src/**/*.ts -- deno task compile-and-install",
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
     "start": "wrangler dev",

@@ -15,7 +15,7 @@ echo "VERSION=\"$VERSION\"" >> "$temp_file"
 deno compile \
     --output autoprovisioner \
     --env-file="$temp_file" \
-    -A src/index.ts
+    -A stdio/index.ts
 
 # TODO-- support windows release
 OS=''
