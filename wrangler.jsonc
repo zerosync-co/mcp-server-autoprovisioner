@@ -1,0 +1,39 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mcp-server-autoprovisioner",
+  "main": "sse/main.ts",
+  "compatibility_date": "2025-03-10",
+  "compatibility_flags": ["nodejs_compat"],
+  "migrations": [
+    {
+      "new_sqlite_classes": ["AutoProvisioner"],
+      "tag": "v1",
+    },
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "class_name": "AutoProvisioner",
+        "name": "MCP_OBJECT",
+      },
+    ],
+  },
+  "kv_namespaces": [
+    {
+      "binding": "OAUTH_KV",
+      "id": "f0c228b28c934030b05df43a2808f4ba",
+    },
+  ],
+  "observability": {
+    "enabled": true,
+  },
+  "vars": {
+    "CLERK_REDIRECT_URL": "https://accounts.zerosync.co",
+    "MCP_SERVER_AUTOPROVISIONER_BASE_URL": "https://autoprovisioner-remote.zerosync.co",
+    "TF_SERVICE_BASE_URL": "https://tf-service.zerosync.co",
+  },
+}

@@ -1,12 +1,42 @@
 # AutoProvisioner MCP Server (open beta)
 
-## Installation (prerelease)
+## Installation
+
+1. Remote (Recommended)
+
+- requires [node and npm to be installed](https://nodejs.org/en/download)
+- remote, [SSE-based communication](https://modelcontextprotocol.io/docs/concepts/transports#server-sent-events-sse)
+
+Update configuration as follows:
+
+```
+{
+  "mcpServers": {
+    "autoprovisioner": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://autoprovisioner-remote.zerosync.co/sse"
+      ]
+    }
+  }
+}
+```
+
+2. Local
+
+- no system dependencies
+- local, [stdio-based communication](https://modelcontextprotocol.io/docs/concepts/transports#standard-input%2Foutput-stdio)
+
+Step 1:
 
 ```
 curl -fsSL https://raw.githubusercontent.com/zerosync-co/mcp-server-autoprovisioner/main/install-prerelease.sh | bash
 ```
 
-### Manual Installation
+Step 2:
+
+Run `mcp-server-autoprovisioner init`, or update configuration as follows
 
 ```
 {
@@ -22,13 +52,14 @@ curl -fsSL https://raw.githubusercontent.com/zerosync-co/mcp-server-autoprovisio
 }
 ```
 
-## From Source
+## Build From Source
 
 ```
 deno compile \
     --output mcp-server-autoprovisioner \
     --env-file=".env" \
-    -A src/index.ts
+    --no-check \
+    -A stdio/index.ts
 ```
 
 ## Testing options

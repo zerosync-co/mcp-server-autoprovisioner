@@ -1,6 +1,6 @@
-import * as path from "@std/path";
+import * as path from "node:path";
 import xdgAppPaths from "xdg-app-paths";
-import * as TOML from "@std/toml";
+import TOML from "smol-toml";
 import * as jwt from "jsonwebtoken";
 import { TRPCClientError } from "@trpc/client";
 
@@ -153,6 +153,15 @@ export function getInitializedLocalState(): Promise<typeof LocalState> {
   });
 }
 
-export function getTRPCErrorMessage(e: unknown): string {
+export function getTRPCErrorMessage(e: unknown) {
   return e instanceof TRPCClientError ? e.message : "Internal Server Error";
+}
+
+export function getBuildEnvVar(key: string) {
+  const value = Deno.env.get(key);
+  if (!value) {
+    throw new Error(`${key} is undefined`);
+  }
+
+  return value;
 }

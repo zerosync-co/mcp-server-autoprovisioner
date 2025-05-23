@@ -1,12 +1,16 @@
-import { getAuthConfigFilePath, getAuthTokens, isDirectory } from "./utils.ts";
+import {
+  getAuthConfigFilePath,
+  getAuthTokens,
+  isDirectory,
+} from "../src/utils.ts";
 import os from "node:os";
-import * as path from "@std/path";
-import { assert } from "@std/assert";
-import * as TOML from "@std/toml";
+import * as path from "node:path";
+import TOML from "smol-toml";
 import open from "open";
 import which from "which";
-import { LocalState } from "./utils.ts";
+import { LocalState } from "../src/utils.ts";
 import { z } from "zod";
+import assert from "node:assert";
 
 export const supportedMcpClients = ["claude_desktop", "cursor", "zed"] as const;
 export const supportedMcpClientsSchema = z.enum(supportedMcpClients);
@@ -77,7 +81,7 @@ export async function login() {
           reject(error);
         } else {
           assert(token);
-          resolve(token);
+          resolve(token as string);
         }
       }
 

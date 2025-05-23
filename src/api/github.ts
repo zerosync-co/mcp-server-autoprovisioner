@@ -1,14 +1,13 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { Octokit } from "octokit";
-import { TF_SERVICE_BASE_URL } from "../env.ts";
 import { getInitializedLocalState } from "../utils.ts";
 import { repositoryName, repositoryOwner } from "../schemas.ts";
 import { filePath } from "../schemas.ts";
 
 // FIXME--
-async function getGithubToken() {
+async function getGithubToken(projectClientBaseUrl: string) {
   const localState = await getInitializedLocalState();
-  const res = await fetch(`${TF_SERVICE_BASE_URL}/github_token`, {
+  const res = await fetch(`${projectClientBaseUrl}/github_token`, {
     headers: {
       Authorization: `Bearer ${localState.accessToken?.value}`,
     },
@@ -18,7 +17,7 @@ async function getGithubToken() {
   return json.accessToken as string;
 }
 
-function readGithubProjectFs(server: McpServer) {
+function readGithubProjectFs(server: McpServer, projectClientBaseUrl: string) {
   server.tool(
     "read_github_project_fs",
     "Read the top-level files of a GitHub project",
@@ -27,7 +26,7 @@ function readGithubProjectFs(server: McpServer) {
       repo: repositoryName,
     },
     async (data) => {
-      const token = await getGithubToken();
+      const token = await getGithubToken(projectClientBaseUrl);
       // refactor to just use fetch
       const response = await new Octokit({ auth: token }).rest
         .repos.getContent({
@@ -50,7 +49,10 @@ function readGithubProjectFs(server: McpServer) {
   );
 }
 
-function readGithubProjectFile(server: McpServer) {
+function readGithubProjectFile(
+  server: McpServer,
+  projectClientBaseUrl: string,
+) {
   server.tool(
     "read_github_project_file",
     "Read the contents of a GitHub project file",
@@ -60,7 +62,7 @@ function readGithubProjectFile(server: McpServer) {
       filePath,
     },
     async (data) => {
-      const token = await getGithubToken();
+      const token = await getGithubToken(projectClientBaseUrl);
       const response = await new Octokit({ auth: token }).rest
         .repos.getContent({
           owner: data.owner,
@@ -84,7 +86,10 @@ function readGithubProjectFile(server: McpServer) {
   );
 }
 
-export function registerGithubApi(server: McpServer) {
-  readGithubProjectFs(server);
-  readGithubProjectFile(server);
+export function registerGithubApi(
+  server: McpServer,
+  projectClientBaseUrl: string,
+) {
+  readGithubProjectFs(server, projectClientBaseUrl);
+  readGithubProjectFile(server, projectClientBaseUrl);
 }
