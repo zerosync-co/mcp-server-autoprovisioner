@@ -1,6 +1,6 @@
-import { getTRPCErrorMessage } from "../utils.ts";
+import { getTRPCErrorMessage } from "../../utils.ts";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { ProjectsClient } from "../projects-client.ts";
+import { ProjectsClient } from "../../projects-client.ts";
 import {
   fileContent,
   filePath,
@@ -8,14 +8,14 @@ import {
   projectName,
   providerContents,
   repositoryUrl,
-} from "../schemas.ts";
+} from "../../schemas.ts";
 
-function initializeInfrastructureProject(
+export function initializeInfrastructureProject(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "initialize_infrastructure_project",
+    "initialize_terraform_project",
     "Create a new terraform infrastructure project",
     {
       projectName,
@@ -24,11 +24,13 @@ function initializeInfrastructureProject(
     },
     async (data) => {
       try {
-        const projectId = await projectsClient.projects.create.mutate({
-          name: data.projectName,
-          providerContents: data.providerContents,
-          repositoryUrl: data.repositoryUrl,
-        });
+        const projectId = await projectsClient.projects.terraform.create.mutate(
+          {
+            name: data.projectName,
+            providerContents: data.providerContents,
+            repositoryUrl: data.repositoryUrl,
+          },
+        );
 
         return {
           content: [{
@@ -49,17 +51,19 @@ function initializeInfrastructureProject(
   );
 }
 
-function readInfrastructureProjectFs(
+export function readProjectFs(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "read_infrastructure_project_fs",
-    "Read the top-level files of an infrastructure project",
+    "read_terraform_project_fs",
+    "Read the top-level files of a terraform project",
     { projectId },
     async (data) => {
       try {
-        const files = await projectsClient.projects.byId.query(data.projectId);
+        const files = await projectsClient.projects.terraform.byId.query(
+          data.projectId,
+        );
 
         return {
           content: [{
@@ -85,17 +89,19 @@ function readInfrastructureProjectFs(
   );
 }
 
-function readInfrastructureProjectFile(
+export function readProjectFile(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "read_infrastructure_project_file",
-    "Read the contents of an infrastructure project file",
+    "read_terraform_project_file",
+    "Read the contents of a terraform project file",
     { projectId, filePath },
     async (data) => {
       try {
-        const file = await projectsClient.projects.fileByPath.query(data);
+        const file = await projectsClient.projects.terraform.fileByPath.query(
+          data,
+        );
 
         return {
           content: [{
@@ -122,12 +128,12 @@ function readInfrastructureProjectFile(
   );
 }
 
-function writeProjectInfrastructure(
+export function writeToProject(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "write_project_infrastructure",
+    "write_terraform_configuration",
     "Write a terraform configuration file",
     {
       projectId,
@@ -136,7 +142,7 @@ function writeProjectInfrastructure(
     },
     async (data) => {
       try {
-        await projectsClient.projects.write.mutate({
+        await projectsClient.projects.terraform.write.mutate({
           projectId: data.projectId,
           filePath: data.filePath,
           content: data.fileContent,
@@ -161,13 +167,13 @@ function writeProjectInfrastructure(
   );
 }
 
-function applyProjectInfrastructure(
+export function applyProjectInfrastructure(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "apply_project_infrastructure",
-    "Apply a terraform infrastructure project",
+    "apply_terraform_infrastructure",
+    "Apply a terraform project",
     {
       // instead of checking if provider(s) are managed
       // need to check if sensitive project vars exist in backend ?
@@ -175,7 +181,7 @@ function applyProjectInfrastructure(
     },
     async (data) => {
       try {
-        await projectsClient.projects.applyInfrastructure.mutate(
+        await projectsClient.projects.terraform.applyInfrastructure.mutate(
           data.projectId,
         );
 
@@ -197,19 +203,19 @@ function applyProjectInfrastructure(
     },
   );
 }
-function destroyProjectInfrastructure(
+export function destroyProjectInfrastructure(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "destroy_project_infrastructure",
-    "Destroy a terraform infrastructure project",
+    "destroy_terraform_infrastructure",
+    "Destroy a terraform project",
     {
       projectId,
     },
     async (data) => {
       try {
-        await projectsClient.projects.destroyInfrastructure.mutate(
+        await projectsClient.projects.terraform.destroyInfrastructure.mutate(
           data.projectId,
         );
 
@@ -230,16 +236,4 @@ function destroyProjectInfrastructure(
       }
     },
   );
-}
-
-export function registerProjectsApi(
-  server: McpServer,
-  projectsClient: ProjectsClient,
-) {
-  initializeInfrastructureProject(server, projectsClient);
-  readInfrastructureProjectFs(server, projectsClient);
-  readInfrastructureProjectFile(server, projectsClient);
-  writeProjectInfrastructure(server, projectsClient);
-  applyProjectInfrastructure(server, projectsClient);
-  destroyProjectInfrastructure(server, projectsClient);
 }

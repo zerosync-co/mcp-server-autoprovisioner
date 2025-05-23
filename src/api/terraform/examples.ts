@@ -1,14 +1,14 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import type { ProjectsClient } from "../projects-client.ts";
-import { getTRPCErrorMessage } from "../utils.ts";
-import { directory, filePath, provider } from "../schemas.ts";
+import type { ProjectsClient } from "../../projects-client.ts";
+import { getTRPCErrorMessage } from "../../utils.ts";
+import { directory, filePath, provider } from "../../schemas.ts";
 
-function listProjectExamples(
+export function listExamples(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "list_infrastructure_project_examples",
+    "list_terraform_project_examples",
     "List example terraform configuration directories",
     {
       provider,
@@ -44,12 +44,12 @@ function listProjectExamples(
   );
 }
 
-function getProjectExampleDirectory(
+export function getTerraformExampleDirectory(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "get_infrastructure_project_example_directory",
+    "get_terraform_project_example_directory",
     "Get an example terraform configuration directory",
     { provider, directory },
     async (data) => {
@@ -83,12 +83,12 @@ function getProjectExampleDirectory(
   );
 }
 
-function getProjectExampleDirectoryFile(
+export function getTerraformExampleDirectoryFile(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "get_infrastructure_project_example_directory_file",
+    "get_terraform_project_example_directory_file",
     "Get a file from an example terraform configuration directory",
     {
       provider,
@@ -126,13 +126,4 @@ function getProjectExampleDirectoryFile(
       }
     },
   );
-}
-
-export function registerExamplesApi(
-  mcpServer: McpServer,
-  projectsClient: ProjectsClient,
-) {
-  listProjectExamples(mcpServer, projectsClient);
-  getProjectExampleDirectory(mcpServer, projectsClient);
-  getProjectExampleDirectoryFile(mcpServer, projectsClient);
 }

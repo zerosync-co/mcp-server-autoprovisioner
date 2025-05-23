@@ -1,10 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
-export function deployInfrastructurePrompt(server: McpServer) {
+export function deployTerraformProjectPrompt(server: McpServer) {
   server.prompt(
-    "deploy_infrastructure_project",
-    "Instructions for deploying infrastructure with AutoProvisioner",
+    "deploy_terraform_project",
+    "Instructions for deploying infrastructure written in terraform with AutoProvisioner",
     { description: z.string() },
     (args) => {
       return {
