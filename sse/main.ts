@@ -40,7 +40,10 @@ export class AutoProvisioner extends McpAgent<Env, unknown, Props> {
 
 export default new OAuthProvider({
   apiRoute: "/sse",
-  apiHandler: AutoProvisioner.mount("/sse") as any,
+  apiHandlers: {
+    "/sse": AutoProvisioner.serveSSE("/sse"),
+    "/mcp": AutoProvisioner.serve("/mcp"),
+  },
   defaultHandler: auth as any,
   authorizeEndpoint: "/authorize",
   tokenEndpoint: "/token",
