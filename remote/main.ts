@@ -39,7 +39,6 @@ export class AutoProvisioner extends McpAgent<Env, unknown, Props> {
 }
 
 export default new OAuthProvider({
-  apiRoute: "/sse",
   apiHandlers: {
     "/sse": AutoProvisioner.serveSSE("/sse"),
     "/mcp": AutoProvisioner.serve("/mcp"),
