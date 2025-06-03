@@ -3,19 +3,13 @@ import type { AppRouter } from "@autoprovisioner/tf-service";
 
 export const createClient = (
   projectsClientBaseUrl: string,
-  getBearerToken: () => Promise<string>,
+  getHeaders: () => Promise<Record<string, string>> | Record<string, string>,
 ) =>
   createTRPCClient<AppRouter>({
     links: [
       httpBatchLink({
         url: `${projectsClientBaseUrl}/trpc`,
-        headers: async () => {
-          const token = await getBearerToken();
-
-          return {
-            Authorization: `Bearer ${token}`,
-          };
-        },
+        headers: getHeaders,
       }),
     ],
   });
