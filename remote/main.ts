@@ -11,10 +11,11 @@ import { McpAgent } from "agents/mcp";
 import OAuthProvider from "@cloudflare/workers-oauth-provider";
 import auth from "./auth.ts";
 import { env } from "cloudflare:workers";
+import { verifyToken } from "@clerk/backend";
 
 type Props = {
   userId: string;
-  origin: string;
+  clerkToken: string;
 };
 
 export class AutoProvisioner extends McpAgent<Env, unknown, Props> {
@@ -26,15 +27,44 @@ export class AutoProvisioner extends McpAgent<Env, unknown, Props> {
     },
   );
 
-  projectsClient = createClient(env.TF_SERVICE_BASE_URL);
+  async getBearerToken() {
+    try {
+      await verifyToken(this.props.clerkToken, {
+        jwtKey: env.CLERK_JWK,
+      });
+      return this.props.clerkToken;
+    } catch (_e) {
+      // const grantKeys = await env.OAUTH_KV.list({
+      //   prefix: `grant:${this.props.userId}`,
+      // });
+      // for (const key in grantKeys) {
+      //   await env.OAUTH_KV.delete(key);
+      // }
 
-  async init() {
-    registerGithubApi(this.server, env.TF_SERVICE_BASE_URL);
+      // TODO-- should redirect to login
+      // return Response.redirect ?
+      throw new Error("unauthorized");
+    }
+  }
+
+  projectsClient = createClient(
+    env.TF_SERVICE_BASE_URL,
+    this.getBearerToken,
+  );
+
+  init() {
+    registerGithubApi(
+      this.server,
+      env.TF_SERVICE_BASE_URL,
+      this.getBearerToken,
+    );
     registerManagedProvidersApi(this.server);
     registerTerraformApi(this.server, this.projectsClient);
     registerPulumiApi(this.server, this.projectsClient);
 
     deployTerraformProjectPrompt(this.server);
+
+    return Promise.resolve();
   }
 }
 
@@ -43,7 +73,7 @@ export default new OAuthProvider({
     "/sse": AutoProvisioner.serveSSE("/sse"),
     "/mcp": AutoProvisioner.serve("/mcp"),
   },
-  defaultHandler: auth as any,
+  defaultHandler: auth,
   authorizeEndpoint: "/authorize",
   tokenEndpoint: "/token",
   clientRegistrationEndpoint: "/register",

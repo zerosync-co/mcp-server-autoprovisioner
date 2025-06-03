@@ -36,4 +36,27 @@
     "MCP_SERVER_AUTOPROVISIONER_BASE_URL": "https://autoprovisioner-remote.zerosync.co",
     "TF_SERVICE_BASE_URL": "https://tf-service.zerosync.co",
   },
+  "env": {
+    "local": {
+      "durable_objects": {
+        "bindings": [
+          {
+            "class_name": "AutoProvisioner",
+            "name": "MCP_OBJECT",
+          },
+        ],
+      },
+      "kv_namespaces": [
+        {
+          "binding": "OAUTH_KV",
+          "id": "f0c228b28c934030b05df43a2808f4ba",
+        },
+      ],
+      "vars": {
+        "CLERK_REDIRECT_URL": "https://vital-oyster-7.accounts.dev",
+        "MCP_SERVER_AUTOPROVISIONER_BASE_URL": "http://localhost:8787",
+        "TF_SERVICE_BASE_URL": "http://localhost:8000",
+      },
+    },
+  },
 }

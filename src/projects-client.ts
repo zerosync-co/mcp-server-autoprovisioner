@@ -1,17 +1,19 @@
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "@autoprovisioner/tf-service";
-import { getInitializedLocalState } from "./utils.ts";
 
-export const createClient = (projectsClientBaseUrl: string) =>
+export const createClient = (
+  projectsClientBaseUrl: string,
+  getBearerToken: () => Promise<string>,
+) =>
   createTRPCClient<AppRouter>({
     links: [
       httpBatchLink({
         url: `${projectsClientBaseUrl}/trpc`,
         headers: async () => {
-          const localState = await getInitializedLocalState();
+          const token = await getBearerToken();
 
           return {
-            Authorization: `Bearer ${localState.accessToken?.value}`,
+            Authorization: `Bearer ${token}`,
           };
         },
       }),

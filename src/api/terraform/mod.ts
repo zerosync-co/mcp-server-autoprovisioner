@@ -10,8 +10,8 @@ import {
   searchTerraformProviders,
 } from "./providers.ts";
 import {
-  applyProjectInfrastructure,
-  destroyProjectInfrastructure,
+  // applyProjectInfrastructure,
+  // destroyProjectInfrastructure,
   initializeInfrastructureProject,
   readProjectFile,
   readProjectFs,
@@ -31,8 +31,8 @@ export function registerTerraformApi(
   readProjectFs(mcpServer, projectsClient);
   readProjectFile(mcpServer, projectsClient);
   writeToProject(mcpServer, projectsClient);
-  applyProjectInfrastructure(mcpServer, projectsClient);
-  destroyProjectInfrastructure(mcpServer, projectsClient);
+  // applyProjectInfrastructure(mcpServer, projectsClient);
+  // destroyProjectInfrastructure(mcpServer, projectsClient);
 
   listTerraformProviderResources(mcpServer, projectsClient);
   listTerraformProviderResourceSchemas(mcpServer, projectsClient);

@@ -7,5 +7,5 @@ dist/
 autoprovisioner*
 mcp-server-autoprovisioner*
 test.ts
-.dev.vars
+.dev.vars*
 .wrangler/

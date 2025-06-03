@@ -167,73 +167,73 @@ export function writeToProject(
   );
 }
 
-export function applyProjectInfrastructure(
-  server: McpServer,
-  projectsClient: ProjectsClient,
-) {
-  server.tool(
-    "apply_terraform_infrastructure",
-    "Apply a terraform project",
-    {
-      // instead of checking if provider(s) are managed
-      // need to check if sensitive project vars exist in backend ?
-      projectId,
-    },
-    async (data) => {
-      try {
-        await projectsClient.projects.terraform.applyInfrastructure.mutate(
-          data.projectId,
-        );
+// export function applyProjectInfrastructure(
+//   server: McpServer,
+//   projectsClient: ProjectsClient,
+// ) {
+//   server.tool(
+//     "apply_terraform_infrastructure",
+//     "Apply a terraform project",
+//     {
+//       // instead of checking if provider(s) are managed
+//       // need to check if sensitive project vars exist in backend ?
+//       projectId,
+//     },
+//     async (data) => {
+//       try {
+//         await projectsClient.projects.terraform.applyInfrastructure.mutate(
+//           data.projectId,
+//         );
 
-        return {
-          content: [{
-            type: "text",
-            text: "Success",
-          }],
-        };
-      } catch (e) {
-        return {
-          isError: true,
-          content: [{
-            type: "text",
-            text: getTRPCErrorMessage(e),
-          }],
-        };
-      }
-    },
-  );
-}
-export function destroyProjectInfrastructure(
-  server: McpServer,
-  projectsClient: ProjectsClient,
-) {
-  server.tool(
-    "destroy_terraform_infrastructure",
-    "Destroy a terraform project",
-    {
-      projectId,
-    },
-    async (data) => {
-      try {
-        await projectsClient.projects.terraform.destroyInfrastructure.mutate(
-          data.projectId,
-        );
+//         return {
+//           content: [{
+//             type: "text",
+//             text: "Success",
+//           }],
+//         };
+//       } catch (e) {
+//         return {
+//           isError: true,
+//           content: [{
+//             type: "text",
+//             text: getTRPCErrorMessage(e),
+//           }],
+//         };
+//       }
+//     },
+//   );
+// }
+// export function destroyProjectInfrastructure(
+//   server: McpServer,
+//   projectsClient: ProjectsClient,
+// ) {
+//   server.tool(
+//     "destroy_terraform_infrastructure",
+//     "Destroy a terraform project",
+//     {
+//       projectId,
+//     },
+//     async (data) => {
+//       try {
+//         await projectsClient.projects.terraform.destroyInfrastructure.mutate(
+//           data.projectId,
+//         );
 
-        return {
-          content: [{
-            type: "text",
-            text: "Success",
-          }],
-        };
-      } catch (e) {
-        return {
-          isError: true,
-          content: [{
-            type: "text",
-            text: getTRPCErrorMessage(e),
-          }],
-        };
-      }
-    },
-  );
-}
+//         return {
+//           content: [{
+//             type: "text",
+//             text: "Success",
+//           }],
+//         };
+//       } catch (e) {
+//         return {
+//           isError: true,
+//           content: [{
+//             type: "text",
+//             text: getTRPCErrorMessage(e),
+//           }],
+//         };
+//       }
+//     },
+//   );
+// }

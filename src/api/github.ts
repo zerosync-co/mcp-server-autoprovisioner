@@ -1,23 +1,34 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { Octokit } from "octokit";
-import { getInitializedLocalState } from "../utils.ts";
 import { repositoryName, repositoryOwner } from "../schemas.ts";
 import { filePath } from "../schemas.ts";
 
 // FIXME--
-async function getGithubToken(projectClientBaseUrl: string) {
-  const localState = await getInitializedLocalState();
-  const res = await fetch(`${projectClientBaseUrl}/github_token`, {
-    headers: {
-      Authorization: `Bearer ${localState.accessToken?.value}`,
-    },
-  });
+async function getGithubToken(
+  projectClientBaseUrl: string,
+  getBearerToken: () => Promise<string>,
+) {
+  try {
+    const token = await getBearerToken();
+    const res = await fetch(`${projectClientBaseUrl}/github_token`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  const json = await res.json() as any;
-  return json.accessToken as string;
+    const json = await res.json() as any;
+    return json.accessToken as string;
+  } catch (e) {
+    console.warn("failed to resolve github token;", e);
+    return undefined;
+  }
 }
 
-function readGithubProjectFs(server: McpServer, projectClientBaseUrl: string) {
+function readGithubProjectFs(
+  server: McpServer,
+  projectClientBaseUrl: string,
+  getBearerToken: () => Promise<string>,
+) {
   server.tool(
     "read_github_project_fs",
     "Read the top-level files of a GitHub project",
@@ -26,7 +37,8 @@ function readGithubProjectFs(server: McpServer, projectClientBaseUrl: string) {
       repo: repositoryName,
     },
     async (data) => {
-      const token = await getGithubToken(projectClientBaseUrl);
+      const token = await getGithubToken(projectClientBaseUrl, getBearerToken);
+
       // refactor to just use fetch
       const response = await new Octokit({ auth: token }).rest
         .repos.getContent({
@@ -52,6 +64,7 @@ function readGithubProjectFs(server: McpServer, projectClientBaseUrl: string) {
 function readGithubProjectFile(
   server: McpServer,
   projectClientBaseUrl: string,
+  getBearerToken: () => Promise<string>,
 ) {
   server.tool(
     "read_github_project_file",
@@ -62,7 +75,7 @@ function readGithubProjectFile(
       filePath,
     },
     async (data) => {
-      const token = await getGithubToken(projectClientBaseUrl);
+      const token = await getGithubToken(projectClientBaseUrl, getBearerToken);
       const response = await new Octokit({ auth: token }).rest
         .repos.getContent({
           owner: data.owner,
@@ -89,7 +102,8 @@ function readGithubProjectFile(
 export function registerGithubApi(
   server: McpServer,
   projectClientBaseUrl: string,
+  getBearerToken: () => Promise<string>,
 ) {
-  readGithubProjectFs(server, projectClientBaseUrl);
-  readGithubProjectFile(server, projectClientBaseUrl);
+  readGithubProjectFs(server, projectClientBaseUrl, getBearerToken);
+  readGithubProjectFile(server, projectClientBaseUrl, getBearerToken);
 }

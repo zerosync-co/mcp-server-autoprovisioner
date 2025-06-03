@@ -49,6 +49,11 @@ app.get("/authorize", async (c) => {
 
   const userId = auth.userId;
 
+  const token = await auth.getToken({ template: "cli" });
+  if (!token?.length) {
+    return new Response(undefined, { status: 401 });
+  }
+
   const { redirectTo } = await c.env.OAUTH_PROVIDER.completeAuthorization({
     request: oauthReqInfo,
     userId,
@@ -56,6 +61,7 @@ app.get("/authorize", async (c) => {
     scope: oauthReqInfo.scope,
     props: {
       userId,
+      clerkToken: token,
     },
   });
 
