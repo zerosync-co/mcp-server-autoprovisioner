@@ -15,7 +15,7 @@ export function initializeInfrastructureProject(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "initialize_terraform_project",
+    "initialize_tf_project",
     "Create a new terraform infrastructure project",
     {
       projectName,
@@ -56,7 +56,7 @@ export function readProjectFs(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "read_terraform_project_fs",
+    "read_tf_project_fs",
     "Read the top-level files of a terraform project",
     { projectId },
     async (data) => {
@@ -94,7 +94,7 @@ export function readProjectFile(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "read_terraform_project_file",
+    "read_tf_project_file",
     "Read the contents of a terraform project file",
     { projectId, filePath },
     async (data) => {
@@ -133,7 +133,7 @@ export function writeToProject(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "write_terraform_configuration",
+    "write_tf_configuration",
     "Write a terraform configuration file",
     {
       projectId,
@@ -172,7 +172,7 @@ export function writeToProject(
 //   projectsClient: ProjectsClient,
 // ) {
 //   server.tool(
-//     "apply_terraform_infrastructure",
+//     "apply_tf_infrastructure",
 //     "Apply a terraform project",
 //     {
 //       // instead of checking if provider(s) are managed
@@ -208,7 +208,7 @@ export function writeToProject(
 //   projectsClient: ProjectsClient,
 // ) {
 //   server.tool(
-//     "destroy_terraform_infrastructure",
+//     "destroy_tf_infrastructure",
 //     "Destroy a terraform project",
 //     {
 //       projectId,

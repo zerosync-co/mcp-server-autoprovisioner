@@ -12,7 +12,7 @@ export function listTerraformProviderResources(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "list_terraform_provider_sources",
+    "list_tf_provider_sources",
     "List terraform provider sources documentation",
     { projectId },
     async (data) => {
@@ -52,7 +52,7 @@ export function listTerraformProviderResourceSchemas(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "list_terraform_provider_resource_schemas",
+    "list_tf_provider_resource_schemas",
     "List terraform provider resource schemas documentation",
     { projectId, providerSource: terraformProviderSource },
     async (data) => {
@@ -90,7 +90,7 @@ export function getTerraformProviderResourceSchemaDetails(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "get_terraform_provider_resource_schema_details",
+    "get_tf_provider_resource_schema_details",
     "Get terraform provider resource schema details documentation",
     {
       projectId,

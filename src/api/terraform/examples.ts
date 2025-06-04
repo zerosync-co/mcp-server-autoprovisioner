@@ -8,7 +8,7 @@ export function listExamples(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "list_terraform_project_examples",
+    "list_tf_project_examples",
     "List example terraform configuration directories",
     {
       provider,
@@ -49,7 +49,7 @@ export function getTerraformExampleDirectory(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "get_terraform_project_example_directory",
+    "get_tf_project_example_directory",
     "Get an example terraform configuration directory",
     { provider, directory },
     async (data) => {
@@ -88,7 +88,7 @@ export function getTerraformExampleDirectoryFile(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "get_terraform_project_example_directory_file",
+    "get_tf_project_example_directory_file",
     "Get a file from an example terraform configuration directory",
     {
       provider,
