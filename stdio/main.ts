@@ -14,12 +14,13 @@ export async function main() {
   const server = createMCPServer();
 
   const TF_SERVICE_BASE_URL = getBuildEnvVar("TF_SERVICE_BASE_URL");
-  const projectsClient = createClient(TF_SERVICE_BASE_URL, async () => {
-    const localState = await getInitializedLocalState();
-    return {
+
+  const localState = await getInitializedLocalState();
+  const projectsClient = createClient(TF_SERVICE_BASE_URL, () => (
+    {
       "Authorization": `Bearer ${localState.accessToken?.value}`,
-    };
-  });
+    }
+  ));
 
   registerGithubApi(server, () => undefined); // FIXME--
 
