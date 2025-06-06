@@ -1,6 +1,5 @@
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { registerGithubApi } from "../src/api/github.ts";
-import { registerManagedProvidersApi } from "../src/api/managed-providers.ts";
 import { registerTerraformApi } from "../src/api/terraform/mod.ts";
 import { createClient } from "../src/projects-client.ts";
 import { deployTerraformProjectPrompt } from "../src/prompts.ts";
@@ -21,7 +20,6 @@ export async function main() {
 
   registerGithubApi(server, () => undefined); // FIXME--
 
-  registerManagedProvidersApi(server);
   registerTerraformApi(server, projectsClient);
   registerPulumiApi(server, projectsClient);
 

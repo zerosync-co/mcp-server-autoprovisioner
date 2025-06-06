@@ -1,7 +1,6 @@
 /// <reference types="../worker-configuration.d.ts" />
 
 import { registerGithubApi } from "../src/api/github.ts";
-import { registerManagedProvidersApi } from "../src/api/managed-providers.ts";
 import { registerTerraformApi } from "../src/api/terraform/mod.ts";
 import { createClient } from "../src/projects-client.ts";
 import { deployTerraformProjectPrompt } from "../src/prompts.ts";
@@ -29,7 +28,6 @@ export class AutoProvisioner extends McpAgent<Env, unknown, Props> {
   init() {
     registerGithubApi(this.server, () => this.props.githubToken);
 
-    registerManagedProvidersApi(this.server);
     registerTerraformApi(this.server, this.projectsClient);
     registerPulumiApi(this.server, this.projectsClient);
 
