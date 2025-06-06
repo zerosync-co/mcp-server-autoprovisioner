@@ -95,7 +95,7 @@ ${outputProperties}
 
 export function getResource(server: McpServer, projectsClient: ProjectsClient) {
   server.tool(
-    "get_pulumi_resource",
+    "get_plm_resource",
     "Get information about a specific resource from the Pulumi Registry",
     {
       provider: z
@@ -169,7 +169,7 @@ export function listResources(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "list_pulumi_resources",
+    "list_plm_resources",
     "List all resource types for a given provider and module",
     {
       provider: z

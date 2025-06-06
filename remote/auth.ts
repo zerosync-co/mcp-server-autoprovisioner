@@ -9,6 +9,11 @@ export type Bindings = Env & {
   OAUTH_PROVIDER: OAuthHelpers;
 };
 
+export type Props = {
+  clerkToken: string;
+  githubToken?: string;
+};
+
 const app = new Hono<{
   Bindings: Bindings;
 }>();
@@ -29,8 +34,9 @@ app.get("/authorize", async (c) => {
   }
 
   const auth = getAuth(c);
+  const userId = auth?.userId;
 
-  if (!auth?.userId) {
+  if (!userId) {
     const mcpRedirectUrl = new URL(
       `${c.env.MCP_SERVER_AUTOPROVISIONER_BASE_URL}/authorize`,
     );
@@ -47,7 +53,26 @@ app.get("/authorize", async (c) => {
     return Response.redirect(authRedirectUrl.toString());
   }
 
-  const userId = auth.userId;
+  const clerkToken = await auth.getToken({ template: "cli" });
+  if (!clerkToken) {
+    throw new Error("failed to resolve clerk token");
+  }
+
+  let githubToken: string | undefined;
+
+  try {
+    const clerkClient = c.get("clerk");
+    const githubTokens = await clerkClient.users.getUserOauthAccessToken(
+      userId,
+      "github",
+    );
+
+    if (githubTokens?.data?.length) {
+      githubToken = githubTokens.data[0].token;
+    }
+  } catch (_) {
+    console.warn(`failed to resolve github token for ${userId}`);
+  }
 
   const { redirectTo } = await c.env.OAUTH_PROVIDER.completeAuthorization({
     request: oauthReqInfo,
@@ -55,8 +80,9 @@ app.get("/authorize", async (c) => {
     metadata: {},
     scope: oauthReqInfo.scope,
     props: {
-      userId,
-    },
+      clerkToken,
+      githubToken,
+    } satisfies Props,
   });
 
   return Response.redirect(redirectTo);

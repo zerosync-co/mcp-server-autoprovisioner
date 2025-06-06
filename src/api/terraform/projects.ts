@@ -15,7 +15,7 @@ export function initializeInfrastructureProject(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "initialize_terraform_project",
+    "initialize_tf_project",
     "Create a new terraform infrastructure project",
     {
       projectName,
@@ -51,12 +51,47 @@ export function initializeInfrastructureProject(
   );
 }
 
+export function listProjects(
+  server: McpServer,
+  projectsClient: ProjectsClient,
+) {
+  server.tool(
+    "list_tf_projects",
+    "list terraform projects",
+    async () => {
+      try {
+        const projectIds = await projectsClient.projects.terraform.list.query();
+
+        return {
+          content: [{
+            type: "resource",
+            resource: {
+              text: JSON.stringify({ projectIds }),
+              uri: "resource template TODO",
+              mimeType: "application/json",
+              description: `List terraform projects`,
+            },
+          }],
+        };
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: getTRPCErrorMessage(e),
+          }],
+        };
+      }
+    },
+  );
+}
+
 export function readProjectFs(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "read_terraform_project_fs",
+    "read_tf_project_fs",
     "Read the top-level files of a terraform project",
     { projectId },
     async (data) => {
@@ -94,7 +129,7 @@ export function readProjectFile(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "read_terraform_project_file",
+    "read_tf_project_file",
     "Read the contents of a terraform project file",
     { projectId, filePath },
     async (data) => {
@@ -133,7 +168,7 @@ export function writeToProject(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "write_terraform_configuration",
+    "write_tf_configuration",
     "Write a terraform configuration file",
     {
       projectId,
@@ -167,62 +202,30 @@ export function writeToProject(
   );
 }
 
-export function applyProjectInfrastructure(
+export function getGitUrl(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "apply_terraform_infrastructure",
-    "Apply a terraform project",
-    {
-      // instead of checking if provider(s) are managed
-      // need to check if sensitive project vars exist in backend ?
-      projectId,
-    },
-    async (data) => {
-      try {
-        await projectsClient.projects.terraform.applyInfrastructure.mutate(
-          data.projectId,
-        );
-
-        return {
-          content: [{
-            type: "text",
-            text: "Success",
-          }],
-        };
-      } catch (e) {
-        return {
-          isError: true,
-          content: [{
-            type: "text",
-            text: getTRPCErrorMessage(e),
-          }],
-        };
-      }
-    },
-  );
-}
-export function destroyProjectInfrastructure(
-  server: McpServer,
-  projectsClient: ProjectsClient,
-) {
-  server.tool(
-    "destroy_terraform_infrastructure",
-    "Destroy a terraform project",
+    "get_tf_project_git_clone_url",
+    "Get a git-cloneable url for a terraform project",
     {
       projectId,
     },
     async (data) => {
       try {
-        await projectsClient.projects.terraform.destroyInfrastructure.mutate(
-          data.projectId,
-        );
+        const url = await projectsClient.projects.terraform.getGitCloneUrl
+          .query(data.projectId);
 
         return {
           content: [{
-            type: "text",
-            text: "Success",
+            type: "resource",
+            resource: {
+              text: url,
+              uri: "resource template TODO",
+              mimeType: "text",
+              description: `${data.projectId} git-cloneable url`,
+            },
           }],
         };
       } catch (e) {

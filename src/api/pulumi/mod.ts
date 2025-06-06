@@ -2,8 +2,10 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { ProjectsClient } from "../../projects-client.ts";
 import { getResource, listResources } from "./resources.ts";
 import {
+  getGitUrl,
   initializeProject,
   installDependency,
+  listProjects,
   preview,
   readProjectFile,
   readProjectFs,
@@ -18,9 +20,12 @@ export function registerPulumiApi(
   listResources(server, projectsClient);
 
   initializeProject(server, projectsClient);
+  listProjects(server, projectsClient);
   readProjectFs(server, projectsClient);
   readProjectFile(server, projectsClient);
   writeToProject(server, projectsClient);
   installDependency(server, projectsClient);
   preview(server, projectsClient);
+
+  getGitUrl(server, projectsClient);
 }

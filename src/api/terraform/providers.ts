@@ -12,7 +12,7 @@ export function searchTerraformProviders(
   server: McpServer,
 ) {
   server.tool(
-    "search_terraform_providers",
+    "search_tf_providers",
     "Search for terraform registry documentation describing a provider",
     { provider },
     async (data) => {
@@ -76,7 +76,7 @@ export function searchTerraformProviders(
 
 export function getProviderTerraformInformation(server: McpServer) {
   server.tool(
-    "get_provider_terraform_information",
+    "get_provider_tf_information",
     "Get high level provider terraform documentation",
     {
       namespace: terraformProviderNamespace,

@@ -23,7 +23,7 @@ export function initializeProject(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "initialize_pulumi_project",
+    "initialize_plm_project",
     "Create a new pulumi infrastructure project",
     {
       projectName,
@@ -63,12 +63,47 @@ export function initializeProject(
   );
 }
 
+export function listProjects(
+  server: McpServer,
+  projectsClient: ProjectsClient,
+) {
+  server.tool(
+    "list_plm_projects",
+    "list pulumi projects",
+    async () => {
+      try {
+        const projectIds = await projectsClient.projects.pulumi.list.query();
+
+        return {
+          content: [{
+            type: "resource",
+            resource: {
+              text: JSON.stringify({ projectIds }),
+              uri: "resource template TODO",
+              mimeType: "application/json",
+              description: `List pulumi projects`,
+            },
+          }],
+        };
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: getTRPCErrorMessage(e),
+          }],
+        };
+      }
+    },
+  );
+}
+
 export function readProjectFs(
   server: McpServer,
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "read_pulumi_project_fs",
+    "read_plm_project_fs",
     "Read the top-level files of a pulumi project",
     { projectId },
     async (data) => {
@@ -106,7 +141,7 @@ export function readProjectFile(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "read_pulumi_project_file",
+    "read_plm_project_file",
     "Read the contents of a pulumi project file",
     { projectId, filePath },
     async (data) => {
@@ -145,7 +180,7 @@ export function writeToProject(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "write_pulumi_configuration",
+    "write_plm_configuration",
     "Write a pulumi configuration file",
     {
       projectId,
@@ -184,7 +219,7 @@ export function installDependency(
   projectsClient: ProjectsClient,
 ) {
   server.tool(
-    "install_pulumi_project_dependency",
+    "install_plm_project_dependency",
     "Install pulumi infrastructure project dependency",
     {
       projectId,
@@ -224,7 +259,7 @@ export function installDependency(
 
 export function preview(server: McpServer, projectsClient: ProjectsClient) {
   server.tool(
-    "preview_pulumi_project",
+    "preview_plm_project",
     "Run pulumi preview for a given project and stack",
     {
       projectId,
@@ -242,6 +277,45 @@ export function preview(server: McpServer, projectsClient: ProjectsClient) {
           content: [{
             type: "text",
             text: previewRes,
+          }],
+        };
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: getTRPCErrorMessage(e),
+          }],
+        };
+      }
+    },
+  );
+}
+
+export function getGitUrl(
+  server: McpServer,
+  projectsClient: ProjectsClient,
+) {
+  server.tool(
+    "get_plm_project_git_clone_url",
+    "Get a git-cloneable url for a pulumi project",
+    {
+      projectId,
+    },
+    async (data) => {
+      try {
+        const url = await projectsClient.projects.pulumi.getGitCloneUrl
+          .query(data.projectId);
+
+        return {
+          content: [{
+            type: "resource",
+            resource: {
+              text: url,
+              uri: "resource template TODO",
+              mimeType: "text",
+              description: `${data.projectId} git-cloneable url`,
+            },
           }],
         };
       } catch (e) {

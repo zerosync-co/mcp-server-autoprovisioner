@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export function deployTerraformProjectPrompt(server: McpServer) {
   server.prompt(
-    "deploy_terraform_project",
+    "deploy_tf_project",
     "Instructions for deploying infrastructure written in terraform with AutoProvisioner",
     { description: z.string() },
     (args) => {
