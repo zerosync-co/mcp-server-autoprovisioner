@@ -63,6 +63,41 @@ export function initializeProject(
   );
 }
 
+export function listProjects(
+  server: McpServer,
+  projectsClient: ProjectsClient,
+) {
+  server.tool(
+    "list_plm_projects",
+    "list pulumi projects",
+    async () => {
+      try {
+        const projectIds = await projectsClient.projects.pulumi.list.query();
+
+        return {
+          content: [{
+            type: "resource",
+            resource: {
+              text: JSON.stringify({ projectIds }),
+              uri: "resource template TODO",
+              mimeType: "application/json",
+              description: `List pulumi projects`,
+            },
+          }],
+        };
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: getTRPCErrorMessage(e),
+          }],
+        };
+      }
+    },
+  );
+}
+
 export function readProjectFs(
   server: McpServer,
   projectsClient: ProjectsClient,
@@ -242,6 +277,45 @@ export function preview(server: McpServer, projectsClient: ProjectsClient) {
           content: [{
             type: "text",
             text: previewRes,
+          }],
+        };
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: getTRPCErrorMessage(e),
+          }],
+        };
+      }
+    },
+  );
+}
+
+export function getGitUrl(
+  server: McpServer,
+  projectsClient: ProjectsClient,
+) {
+  server.tool(
+    "get_plm_project_git_clone_url",
+    "Get a git-cloneable url for a pulumi project",
+    {
+      projectId,
+    },
+    async (data) => {
+      try {
+        const url = await projectsClient.projects.pulumi.getGitCloneUrl
+          .query(data.projectId);
+
+        return {
+          content: [{
+            type: "resource",
+            resource: {
+              text: url,
+              uri: "resource template TODO",
+              mimeType: "text",
+              description: `${data.projectId} git-cloneable url`,
+            },
           }],
         };
       } catch (e) {

@@ -10,7 +10,9 @@ import {
   searchTerraformProviders,
 } from "./providers.ts";
 import {
+  getGitUrl,
   initializeInfrastructureProject,
+  listProjects,
   readProjectFile,
   readProjectFs,
   writeToProject,
@@ -26,6 +28,7 @@ export function registerTerraformApi(
   projectsClient: ProjectsClient,
 ) {
   initializeInfrastructureProject(mcpServer, projectsClient);
+  listProjects(mcpServer, projectsClient);
   readProjectFs(mcpServer, projectsClient);
   readProjectFile(mcpServer, projectsClient);
   writeToProject(mcpServer, projectsClient);
@@ -40,4 +43,6 @@ export function registerTerraformApi(
   listExamples(mcpServer, projectsClient);
   getTerraformExampleDirectory(mcpServer, projectsClient);
   getTerraformExampleDirectoryFile(mcpServer, projectsClient);
+
+  getGitUrl(mcpServer, projectsClient);
 }

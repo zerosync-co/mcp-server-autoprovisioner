@@ -51,6 +51,41 @@ export function initializeInfrastructureProject(
   );
 }
 
+export function listProjects(
+  server: McpServer,
+  projectsClient: ProjectsClient,
+) {
+  server.tool(
+    "list_tf_projects",
+    "list terraform projects",
+    async () => {
+      try {
+        const projectIds = await projectsClient.projects.terraform.list.query();
+
+        return {
+          content: [{
+            type: "resource",
+            resource: {
+              text: JSON.stringify({ projectIds }),
+              uri: "resource template TODO",
+              mimeType: "application/json",
+              description: `List terraform projects`,
+            },
+          }],
+        };
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: getTRPCErrorMessage(e),
+          }],
+        };
+      }
+    },
+  );
+}
+
 export function readProjectFs(
   server: McpServer,
   projectsClient: ProjectsClient,
@@ -152,6 +187,45 @@ export function writeToProject(
           content: [{
             type: "text",
             text: "Success",
+          }],
+        };
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: getTRPCErrorMessage(e),
+          }],
+        };
+      }
+    },
+  );
+}
+
+export function getGitUrl(
+  server: McpServer,
+  projectsClient: ProjectsClient,
+) {
+  server.tool(
+    "get_tf_project_git_clone_url",
+    "Get a git-cloneable url for a terraform project",
+    {
+      projectId,
+    },
+    async (data) => {
+      try {
+        const url = await projectsClient.projects.terraform.getGitCloneUrl
+          .query(data.projectId);
+
+        return {
+          content: [{
+            type: "resource",
+            resource: {
+              text: url,
+              uri: "resource template TODO",
+              mimeType: "text",
+              description: `${data.projectId} git-cloneable url`,
+            },
           }],
         };
       } catch (e) {
