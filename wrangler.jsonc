@@ -5,7 +5,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "mcp-server-autoprovisioner",
-  "main": "remote/main.ts",
+  "main": "remote/index.ts",
   "compatibility_date": "2025-03-10",
   "compatibility_flags": ["nodejs_compat"],
   "migrations": [

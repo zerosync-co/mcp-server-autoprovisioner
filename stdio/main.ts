@@ -1,11 +1,14 @@
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { registerGithubApi } from "../src/api/github.ts";
-import { registerTerraformApi } from "../src/api/terraform/mod.ts";
-import { createClient } from "../src/projects-client.ts";
-import { deployTerraformProjectPrompt } from "../src/prompts.ts";
-import { registerPulumiApi } from "../src/api/pulumi/mod.ts";
-import { getBuildEnvVar, getInitializedLocalState } from "../src/utils.ts";
-import { createMCPServer } from "../src/server.ts";
+import {
+  createClient,
+  createMCPServer,
+  deployTerraformProjectPrompt,
+  getBuildEnvVar,
+  getInitializedLocalState,
+  registerGithubApi,
+  registerPulumiApi,
+  registerTerraformApi,
+} from "../src/mod.ts";
 
 export async function main() {
   const server = createMCPServer();

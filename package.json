@@ -1,6 +1,7 @@
 {
-  "name": "mcp-server",
+  "name": "@autoprovisioner/mcp-server",
   "version": "0.0.1",
+  "exports": "./src/mod.ts",
   "scripts": {
     "compile": "deno compile --output autoprovisioner --env-file=\".env\" -A stdio/index.ts",
     "compile-and-install": "./compile-and-install-local.sh",
