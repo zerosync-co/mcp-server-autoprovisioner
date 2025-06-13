@@ -1,4 +1,4 @@
-import { McpServer } from "@modelcontextprotocol/sdk";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { ProjectsClient } from "../../projects-client.ts";
 import {
   getTerraformProviderResourceSchemaDetails,
