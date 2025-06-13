@@ -8,7 +8,7 @@ export function pulumiDODropletsDemo(server: McpServer) {
       const prompt =
         `# DigitalOcean Load-Balanced Web Server Infrastructure Demo
 
-I need to create a scalable web server infrastructure on DigitalOcean using Pulumi with TypeScript. This will demonstrate a complete Infrastructure-as-Code workflow from creation to local deployment.
+You need to create a scalable web server infrastructure on DigitalOcean using Pulumi with TypeScript. This will demonstrate a complete Infrastructure-as-Code workflow from creation to local deployment.
 
 ## Infrastructure Requirements
 
@@ -17,9 +17,10 @@ I need to create a scalable web server infrastructure on DigitalOcean using Pulu
 - Each droplet should automatically install and configure nginx web server
 - Load balancer should distribute HTTP traffic across all web servers
 - All resources should be properly tagged for organization and cost tracking
+- Prioritze simplicity and do not include complex setup steps such as configuring SSH keys or VPC
 
-**Default Configuration (but allow me to customize):**
-- **Number of droplets**: 2 (but let me specify a different count if needed)
+**Default Configuration (but allow the user to customize):**
+- **Number of droplets**: 2 (but allow the user to specify a different count if needed)
 - **Droplet specifications**: Use cost-effective small droplets (1 vCPU, 1GB RAM)
 - **Operating system**: Ubuntu 20.04 LTS x64
 - **Region**: Choose a reasonable default region (NYC3 or similar)
@@ -43,7 +44,7 @@ I need to create a scalable web server infrastructure on DigitalOcean using Pulu
 - Use the Pulumi stack name in tagging for environment separation
 
 **Outputs:**
-- Export the load balancer's public IP address so I can test the deployment
+- Export the load balancer's public IP address so the user can test the deployment
 - This IP should be accessible via HTTP to see the nginx welcome page
 
 ## Technical Specifications
@@ -69,50 +70,49 @@ I need to create a scalable web server infrastructure on DigitalOcean using Pulu
 This demo will demonstrate the full Infrastructure-as-Code lifecycle:
 
 1. **Project Creation**: Interactive project creation with file-by-file confirmation
-2. **Project Analysis**: Read and understand the generated project structure
-3. **Local Development**: You'll clone the project to your local development environment
-4. **Configuration**: You'll configure your DigitalOcean credentials locally
-5. **Deployment**: You'll deploy the infrastructure using local Pulumi CLI
-6. **Testing**: You'll test the deployed load balancer and web servers
-7. **Cleanup**: You'll tear down the infrastructure when done
+2. **Project Analysis**: Understand the generated project structure
+3. **Local Development**: The user will clone the project to their local development environment
+4. **Configuration**: The user will configure their DigitalOcean credentials locally
+5. **Deployment**: The user will deploy the infrastructure using local Pulumi CLI
+6. **Testing**: The user will test the deployed load balancer and web servers
+7. **Cleanup**: The user will tear down the infrastructure when done
 
 ## Interactive File Creation Process
 
-After project initialization, I will:
+After project initialization, you will:
 
 1. **File-by-File Creation**: For each file that needs modification or creation:
    - Describe what the file does and why it's needed
    - Show the complete content that will be written
    - Explain key components and their purpose
-   - Wait for your "proceed" or "yes" before writing the file
+   - Wait for the user's "proceed" or "yes" before writing the file
    - Move to the next file only after confirmation
 
-This interactive approach ensures you understand every component before it's created and can stop or modify the process at any point.
+This interactive approach ensures the user understands every component before it's created and can stop or modify the process at any point.
 
 ## Configuration Questions
 
-Before you start building, please ask me:
-- How many web server droplets would you like? (default: 2)
+Before you start building, please ask the user:
+- How many web server droplets would they like? (default: 2)
 - Any preference for DigitalOcean region? (default: NYC3)
 - Any specific droplet size requirements? (default: s-1vcpu-1gb)
-- Or would you like to use the default values?
+- Or would they like to use the default values?
 
 Then proceed with creating the Pulumi project with these specifications. Make sure to explain what each component does as you build it, since this is for learning purposes.
 
 ## Interactive Project Creation Steps
 
-Follow this exact sequence for creating the project:
+You must follow this exact sequence for creating the project:
 
 ### Step 1: Project Initialization
-1. Initialize a new Pulumi TypeScript project
-2. Analyze what was generated and what needs to be modified
+1. You initialize a new Pulumi TypeScript project
 
 ### Step 2: Interactive File Creation
-For each file that needs to be created or modified:
+For each file that needs to be created or modified, you must:
 1. **Explain the File**: Describe what this file does and why it's needed
 2. **Show the Content**: Display the complete content that will be written
 3. **Explain Key Components**: Break down important parts of the code
-4. **Wait for Confirmation**: Ask user to type "proceed" or "yes" before writing
+4. **Wait for Confirmation**: Ask the user to type "proceed" or "yes" before writing
 5. **Write the File**: Only proceed after explicit user confirmation
 6. **Move to Next File**: Repeat for each remaining file
 
@@ -131,10 +131,10 @@ After all files are created:
 
 ## Post-Validation Instructions
 
-After you complete the project creation AND validation, provide me with:
+After you complete the project creation AND validation, provide the user with:
 
 1. **Validation Summary**: Brief report of what was checked and any issues that were fixed
-2. **Git Clone URL**: The repository URL so I can clone the validated project locally
+2. **Git Clone URL**: The repository URL so the user can clone the validated project locally
 3. **Local Setup Instructions**:
     - How to install dependencies ('npm install')
     - How to configure DigitalOcean credentials
@@ -151,12 +151,13 @@ After you complete the project creation AND validation, provide me with:
 
 ## Extension Opportunities
 
-After the basic deployment is working, offer suggestions for additional improvements I could make to this infrastructure, such as:
+After the basic deployment is working, offer suggestions for additional improvements the user could make to this infrastructure, such as:
 - Adding SSL/TLS certificates
 - Implementing monitoring and alerting
 - Adding a database backend
 - Setting up CI/CD pipelines
 - Implementing blue-green deployments
+- Configuring SSH keys or VPC
 
 This should provide a comprehensive learning experience that demonstrates the complete Infrastructure-as-Code workflow from creation to deployment.`;
 
