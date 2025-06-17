@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { credentialKeysSchema } from "@autoprovisioner/tf-service";
+import { credentialKeysSchema } from "../../tf-service/src/mod.ts"; // FIXME--
 
 export const provider = z.string().describe(
   "The cloud provider (e.g., 'cloudflare', 'aws', 'azure', 'gcp', 'random')",

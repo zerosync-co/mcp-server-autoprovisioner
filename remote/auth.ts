@@ -64,7 +64,7 @@ app.get("/authorize", async (c) => {
     const clerkClient = c.get("clerk");
     const githubTokens = await clerkClient.users.getUserOauthAccessToken(
       userId,
-      "github",
+      "oauth_github",
     );
 
     if (githubTokens?.data?.length) {

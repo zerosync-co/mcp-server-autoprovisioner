@@ -1,5 +1,5 @@
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
-import type { AppRouter } from "@autoprovisioner/tf-service";
+import type { AppRouter } from "../../tf-service/src/mod.ts"; // FIXME--
 
 export const createClient = (
   projectsClientBaseUrl: string,
