@@ -2,6 +2,7 @@ import { getTRPCErrorMessage } from "../../utils.ts";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { ProjectsClient } from "../../projects-client.ts";
 import {
+  credentialKeys,
   fileContent,
   filePath,
   projectId,
@@ -316,6 +317,46 @@ export function getGitUrl(
               mimeType: "text",
               description: `${data.projectId} git-cloneable url`,
             },
+          }],
+        };
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: getTRPCErrorMessage(e),
+          }],
+        };
+      }
+    },
+  );
+}
+
+export function applyInfrastructure(
+  server: McpServer,
+  projectsClient: ProjectsClient,
+) {
+  server.tool(
+    "apply_plm_project_infrastructure",
+    "Run 'pulumi up' for a given project and stack. This might take awhile",
+    {
+      projectId,
+      stackName: z.string().optional().describe(
+        "The associated stack name. Defaults to 'dev'.",
+      ),
+      credentialKeys,
+    },
+    async (data) => {
+      try {
+        // FIXME-- takes too long to be standard req/res pattern
+        const res = await projectsClient.projects.pulumi.up.mutate(
+          data,
+        );
+
+        return {
+          content: [{
+            type: "text",
+            text: res,
           }],
         };
       } catch (e) {

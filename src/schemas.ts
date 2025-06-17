@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { credentialKeysSchema } from "@autoprovisioner/tf-service";
 
 export const provider = z.string().describe(
   "The cloud provider (e.g., 'cloudflare', 'aws', 'azure', 'gcp', 'random')",
@@ -51,4 +52,8 @@ export const terraformProviderName = z.string().describe(
 
 export const terraformProviderVersion = z.string().describe(
   "The terraform provider version (e.g., 'v5.5.0')",
+);
+
+export const credentialKeys = credentialKeysSchema.describe(
+  "Set of credential keys required for authentication (e.g., 'DIGITALOCEAN_TOKEN', 'CLOUDFLARE_API_TOKEN')",
 );
