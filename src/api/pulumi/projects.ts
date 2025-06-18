@@ -187,6 +187,7 @@ export function writeToProject(
       projectId,
       filePath,
       fileContent,
+      // validateAfterWrite ?
     },
     async (data) => {
       try {
@@ -352,11 +353,56 @@ export function applyInfrastructure(
         const res = await projectsClient.projects.pulumi.up.mutate(
           data,
         );
+        // do Promise.race against 10 seconds. if timeout wins, then return task id and poll
+        //
+        // just start task in a new worker
 
         return {
           content: [{
             type: "text",
-            text: res,
+            text: JSON.stringify(res),
+          }],
+        };
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: getTRPCErrorMessage(e),
+          }],
+        };
+      }
+    },
+  );
+}
+
+export function checkInfrastructureJob(
+  server: McpServer,
+  projectsClient: ProjectsClient,
+) {
+  server.tool(
+    "poll_plm_project_infrastructure_job",
+    "Check the status of an infrastructure job",
+    {
+      waitSeconds: z.number().default(30).describe(
+        "Wait time in seconds until polling; default 30 seconds",
+      ), // REVIEW-- http connection times out at 60 seconds. set max to 30 ?
+      jobId: z.string().uuid().describe("Job ID"),
+    },
+    async (data) => {
+      await new Promise((resolve) =>
+        setTimeout(resolve, data.waitSeconds * 1000)
+      );
+
+      try {
+        const res = await projectsClient.jobs.get.query(
+          data.jobId,
+        );
+
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify(res),
           }],
         };
       } catch (e) {

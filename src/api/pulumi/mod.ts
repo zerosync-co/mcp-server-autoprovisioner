@@ -3,6 +3,7 @@ import { ProjectsClient } from "../../projects-client.ts";
 import { getResource, listResources } from "./resources.ts";
 import {
   applyInfrastructure,
+  checkInfrastructureJob,
   getGitUrl,
   initializeProject,
   installDependency,
@@ -28,6 +29,7 @@ export function registerPulumiApi(
   installDependency(server, projectsClient);
   preview(server, projectsClient);
   applyInfrastructure(server, projectsClient);
+  checkInfrastructureJob(server, projectsClient);
 
   getGitUrl(server, projectsClient);
 }

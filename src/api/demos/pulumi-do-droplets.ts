@@ -93,6 +93,7 @@ This interactive approach ensures the user understands every component before it
 ## Configuration Questions
 
 Before you start building, please ask the user:
+- What operating system are they using? (Windows or macOS/Linux; default: macOS/Linux) - This will help provide platform-specific instructions
 - How many web server droplets would they like? (default: 2)
 - Any preference for DigitalOcean region? (default: NYC3)
 - Any specific droplet size requirements? (default: s-1vcpu-1gb)
@@ -131,21 +132,33 @@ After all files are created:
 
 ## Post-Validation Instructions
 
-After you complete the project creation AND validation, provide the user with:
+After you complete the project creation AND validation:
 
-1. **Validation Summary**: Brief report of what was checked and any issues that were fixed
-2. **Git Clone URL**: The repository URL so the user can clone the validated project locally
-3. **Local Setup Instructions**:
+1. **Validation Summary**: Provide a brief report of what was checked and any issues that were fixed
+
+2. **Deployment Option**: Ask the user if they want to automatically deploy the infrastructure project now, or if they prefer to clone it locally and deploy it themselves
+
+### If User Chooses Automatic Deployment:
+- Proceed with automatic deployment of the infrastructure
+- Provide real-time updates on the deployment progress
+- Show the load balancer IP address and testing instructions once deployed
+- Provide cleanup commands for when they're ready to tear down
+
+### If User Chooses Local Deployment:
+Provide the user with:
+
+1. **Git Clone URL**: The repository URL so the user can clone the validated project locally
+2. **Local Setup Instructions** (platform-specific based on user's OS):
     - How to install dependencies ('npm install')
-    - How to configure DigitalOcean credentials
+    - How to configure DigitalOcean credentials (different for Windows vs macOS/Linux)
     - How to create and configure a Pulumi stack
-4. **Deployment Commands**:
+3. **Deployment Commands**:
     - How to preview the infrastructure ('pulumi preview')
     - How to deploy the infrastructure ('pulumi up')
-5. **Testing Instructions**:
+4. **Testing Instructions**:
     - How to get the load balancer IP address
     - How to test the web servers are responding
-6. **Cleanup Commands**:
+5. **Cleanup Commands**:
     - How to destroy the infrastructure ('pulumi destroy')
     - How to remove the stack ('pulumi stack rm')
 
