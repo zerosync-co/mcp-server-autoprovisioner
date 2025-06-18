@@ -349,13 +349,9 @@ export function applyInfrastructure(
     },
     async (data) => {
       try {
-        // FIXME-- takes too long to be standard req/res pattern
         const res = await projectsClient.projects.pulumi.up.mutate(
           data,
         );
-        // do Promise.race against 10 seconds. if timeout wins, then return task id and poll
-        //
-        // just start task in a new worker
 
         return {
           content: [{
