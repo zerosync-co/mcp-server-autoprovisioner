@@ -2,6 +2,7 @@ import { getTRPCErrorMessage } from "../../utils.ts";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { ProjectsClient } from "../../projects-client.ts";
 import {
+  credentialKeys,
   fileContent,
   filePath,
   projectId,
@@ -9,6 +10,7 @@ import {
   providerContents,
   repositoryUrl,
 } from "../../schemas.ts";
+import { z } from "zod";
 
 export function initializeInfrastructureProject(
   server: McpServer,
@@ -187,6 +189,156 @@ export function writeToProject(
           content: [{
             type: "text",
             text: "Success",
+          }],
+        };
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: getTRPCErrorMessage(e),
+          }],
+        };
+      }
+    },
+  );
+}
+
+export function planInfrastructure(
+  server: McpServer,
+  projectsClient: ProjectsClient,
+) {
+  server.tool(
+    "plan_tf_project_infrastructure",
+    "Run 'terraform plan' for a given project to preview changes",
+    {
+      projectId,
+      credentialKeys: credentialKeys.optional(),
+    },
+    async (data) => {
+      try {
+        const res = await projectsClient.projects.terraform.plan.query(
+          data,
+        );
+
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify(res),
+          }],
+        };
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: getTRPCErrorMessage(e),
+          }],
+        };
+      }
+    },
+  );
+}
+
+export function applyInfrastructure(
+  server: McpServer,
+  projectsClient: ProjectsClient,
+) {
+  server.tool(
+    "apply_tf_project_infrastructure",
+    "Run 'terraform apply' for a given project. This might take awhile",
+    {
+      projectId,
+      credentialKeys,
+    },
+    async (data) => {
+      try {
+        const res = await projectsClient.projects.terraform.apply.mutate(
+          data,
+        );
+
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify(res),
+          }],
+        };
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: getTRPCErrorMessage(e),
+          }],
+        };
+      }
+    },
+  );
+}
+
+export function destroyInfrastructure(
+  server: McpServer,
+  projectsClient: ProjectsClient,
+) {
+  server.tool(
+    "destroy_tf_project_infrastructure",
+    "Run 'terraform destroy' for a given project. This will tear down all infrastructure",
+    {
+      projectId,
+      credentialKeys,
+    },
+    async (data) => {
+      try {
+        const res = await projectsClient.projects.terraform.destroy.mutate(
+          data,
+        );
+
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify(res),
+          }],
+        };
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: getTRPCErrorMessage(e),
+          }],
+        };
+      }
+    },
+  );
+}
+
+export function checkInfrastructureJob(
+  server: McpServer,
+  projectsClient: ProjectsClient,
+) {
+  server.tool(
+    "poll_tf_project_infrastructure_job",
+    "Check the status of an infrastructure job",
+    {
+      waitSeconds: z.number().default(30).describe(
+        "Wait time in seconds until polling; default 30 seconds",
+      ),
+      jobId: z.string().uuid().describe("Job ID"),
+    },
+    async (data) => {
+      await new Promise((resolve) =>
+        setTimeout(resolve, data.waitSeconds * 1000)
+      );
+
+      try {
+        const res = await projectsClient.jobs.get.query(
+          data.jobId,
+        );
+
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify(res),
           }],
         };
       } catch (e) {

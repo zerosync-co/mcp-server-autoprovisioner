@@ -30,7 +30,7 @@ export function initializeProject(
       projectName,
       runtime: supportedRuntimesSchema,
       repositoryUrl: repositoryUrl.optional(),
-      stackName: z.string().optional().describe(
+      stackName: z.string().default("dev").describe(
         "The associated stack name. Defaults to 'dev'.",
       ),
     },
@@ -265,7 +265,7 @@ export function preview(server: McpServer, projectsClient: ProjectsClient) {
     "Run pulumi preview for a given project and stack",
     {
       projectId,
-      stackName: z.string().optional().describe(
+      stackName: z.string().default("dev").describe(
         "The associated stack name. Defaults to 'dev'.",
       ),
     },
@@ -342,7 +342,7 @@ export function applyInfrastructure(
     "Run 'pulumi up' for a given project and stack. This might take awhile",
     {
       projectId,
-      stackName: z.string().optional().describe(
+      stackName: z.string().default("dev").describe(
         "The associated stack name. Defaults to 'dev'.",
       ),
       credentialKeys,
@@ -350,6 +350,45 @@ export function applyInfrastructure(
     async (data) => {
       try {
         const res = await projectsClient.projects.pulumi.up.mutate(
+          data,
+        );
+
+        return {
+          content: [{
+            type: "text",
+            text: JSON.stringify(res),
+          }],
+        };
+      } catch (e) {
+        return {
+          isError: true,
+          content: [{
+            type: "text",
+            text: getTRPCErrorMessage(e),
+          }],
+        };
+      }
+    },
+  );
+}
+
+export function destroyInfrastructure(
+  server: McpServer,
+  projectsClient: ProjectsClient,
+) {
+  server.tool(
+    "destroy_plm_project_infrastructure",
+    "Run 'pulumi destroy' for a given project and stack. This will tear down all infrastructure",
+    {
+      projectId,
+      stackName: z.string().default("dev").describe(
+        "The associated stack name. Defaults to 'dev'.",
+      ),
+      credentialKeys,
+    },
+    async (data) => {
+      try {
+        const res = await projectsClient.projects.pulumi.destroy.mutate(
           data,
         );
 

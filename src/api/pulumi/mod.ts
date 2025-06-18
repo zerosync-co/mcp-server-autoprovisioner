@@ -4,6 +4,7 @@ import { getResource, listResources } from "./resources.ts";
 import {
   applyInfrastructure,
   checkInfrastructureJob,
+  destroyInfrastructure,
   getGitUrl,
   initializeProject,
   installDependency,
@@ -29,6 +30,7 @@ export function registerPulumiApi(
   installDependency(server, projectsClient);
   preview(server, projectsClient);
   applyInfrastructure(server, projectsClient);
+  destroyInfrastructure(server, projectsClient);
   checkInfrastructureJob(server, projectsClient);
 
   getGitUrl(server, projectsClient);
