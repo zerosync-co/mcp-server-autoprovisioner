@@ -253,7 +253,7 @@ export function applyInfrastructure(
     },
     async (data) => {
       try {
-        const res = await projectsClient.projects.terraform.apply.mutate(
+        const res = await projectsClient.projects.terraform.applyInfra.mutate(
           data,
         );
 
