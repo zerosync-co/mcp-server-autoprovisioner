@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/zerosync-co-mcp-server-autoprovisioner-badge.png)](https://mseep.ai/app/zerosync-co-mcp-server-autoprovisioner)
+
 # AutoProvisioner MCP Server (open beta)
 
 ## Installation
