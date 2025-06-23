@@ -1,8 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 
-export function pulumiDODropletsDemo(server: McpServer) {
+export function digitalOceanDropletsDemo(server: McpServer) {
   server.tool(
-    "pulumi_do_droplets_demo",
+    "digitalocean_droplets_demo",
     "Get instructions for creating a scalable web server infrastructure on DigitalOcean using Pulumi with Typescript",
     () => {
       const prompt =
@@ -93,6 +93,7 @@ This interactive approach ensures the user understands every component before it
 ## Configuration Questions
 
 Before you start building, please ask the user:
+- What infrastructure as code strategy would they like to use? (default: Pulumi) - Options include Pulumi, Terraform, or other IaC tools
 - What operating system are they using? (Windows or macOS/Linux; default: macOS/Linux) - This will help provide platform-specific instructions
 - How many web server droplets would they like? (default: 2)
 - Any preference for DigitalOcean region? (default: NYC3)
